@@ -55,7 +55,7 @@ def build_sentiment_to_toppings_map(invalid_topping_groups=None):
 
 def choose_toppings(score, toppings_map):
     bins = sorted(list(toppings_map.keys()))
-    bin = next(b for b in enumerate(bins) if score > b)
+    bin = next(b for b in bins if score > b)
     appropriate_toppings = toppings_map[bin]
     topping = random.choice(appropriate_toppings)
     return topping
@@ -66,7 +66,7 @@ def suggest_toppings(query, toppings_map, n_toppings):
     split_length = int(len(words)/n_toppings)
     sentence_words = [" ".join(words[i:i+split_length]) for i in range(0, len(words), split_length)]
     sentiment_analysis = pipeline("sentiment-analysis", model="siebert/sentiment-roberta-large-english")
-    scores = sentiment_analysis(sentence_words, padding='max_length')
+    scores = sentiment_analysis(sentence_words, padding='longest')
     toppings = [choose_toppings(get_polarity(score), toppings_map) for score in scores]
     return toppings
 
