@@ -63,6 +63,7 @@ def choose_toppings(score, toppings_map):
 
 def suggest_toppings(query, toppings_map, n_toppings):
     words = query.split()
+    # TODO: fix this to return EXACTLY n_toppings sentences
     split_length = int(len(words)/n_toppings)
     sentence_words = [" ".join(words[i:i+split_length]) for i in range(0, len(words), split_length)]
     sentiment_analysis = pipeline("sentiment-analysis", model="siebert/sentiment-roberta-large-english")
