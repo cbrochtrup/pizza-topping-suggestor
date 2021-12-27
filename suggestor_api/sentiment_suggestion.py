@@ -50,7 +50,8 @@ def build_sentiment_to_toppings_map(invalid_topping_groups=None):
         for k, v in all_scores.items():
             if v > bin_start and v <= bin_stop:
                 binned_scores[bin_start].append(k)
-    return binned_scores
+    # Return normal dict so we get key errors for unspecified bins
+    return dict(binned_scores)
 
 
 def choose_toppings(score, toppings_map):
@@ -59,23 +60,28 @@ def choose_toppings(score, toppings_map):
     appropriate_toppings = toppings_map[bin]
     topping = random.choice(appropriate_toppings)
     return topping
-    
+
 
 def suggest_toppings(query, toppings_map, n_toppings):
     words = query.split()
     # TODO: fix this to return EXACTLY n_toppings sentences
     split_length = int(len(words)/n_toppings)
     sentence_words = [" ".join(words[i:i+split_length]) for i in range(0, len(words), split_length)]
+    [print(len(_)) for _ in sentence_words]
+    print(f'we have {len(sentence_words)} sentecnes with {len(sentence_words[0])} characters')
+    # TODO: get faster model
     sentiment_analysis = pipeline("sentiment-analysis", model="siebert/sentiment-roberta-large-english")
     scores = sentiment_analysis(sentence_words, padding='longest')
+    # TODO: Prevent duplicate toppings
     toppings = [choose_toppings(get_polarity(score), toppings_map) for score in scores]
     return toppings
 
 
 if __name__ == "__main__":
     m = build_sentiment_to_toppings_map()
-    suggest_toppings(
+    toppings = suggest_toppings(
         'My day was kind of rough, I could not find my blanket and my children all tried to kill me',
         m, 3
     )
+    print(toppings)
     print('hi')
