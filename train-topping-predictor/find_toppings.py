@@ -2,6 +2,7 @@ import json
 import sys
 import csv
 import string
+import itertools
 
 # Import toppings JSON
 # Create node CSV, each node is a topping
@@ -89,8 +90,6 @@ def build_edge(top1, top2, node2id):
     )
 
 
-
-import itertools
 def find_topping_edges(pizza_descriptions, toppings_dict, node2id):
     out_list_dict = []
     for desc in pizza_descriptions:
