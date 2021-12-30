@@ -1,0 +1,12 @@
+name: gnn-edge-pred
+channels:
+- pytorch
+- conda
+dependencies:
+- python=3.8
+- pip
+- pytorch=1.9.1
+- scikit-learn
+- pandas
+- pip:
+  - dgl
