@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vivacious Vocabulary</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Questrial&display=swap" rel="stylesheet">
+    <!-- Bulma Version 0.9.0-->
+    <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.2/css/bulma.min.css" />
+    <link rel="stylesheet" type="text/css" href="login.css">
+</head>
+
+<body>
+    <section class="hero is-success is-fullheight">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                 <!--
+                Keeps desktop width close to phone width
+                 -->
+
+                    <h3 class="title has-text-black is-1" id="wordToDefine">Pizza Topping Suggestor</h3>
+                        <button class="button is-block is-info is-large is-fullwidth" id="newGame">
+                            New Game<i class="fa fa-sign-in" aria-hidden="true"></i>
+                        </button>
+                        <div class="box has-text-black pt-1 mt-1" id="scoresTable">Results will show here</div>
+                        <div class="field">
+                            <div class="control is-expanded">
+                                <input class="input is-large" type="text" placeholder="Click New Game" autofocus="" id="userInputField" >
+                            </div>
+                        </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script type="application/javascript" src="./script.js"></script>
+
+</html>
