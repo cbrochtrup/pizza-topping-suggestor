@@ -33,11 +33,11 @@ sacremoses==0.0.46
 six==1.16.0
 sniffio==1.2.0
 starlette==0.16.0
-tokenizers==0.10.3
-torch==1.10.1
+tokenizers
+torch==1.9.1
 tqdm==4.62.3
 traitlets==5.1.1
-transformers==4.14.1
+transformers
 typing_extensions==4.0.1
 urllib3==1.26.7
 uvicorn==0.16.0
@@ -45,3 +45,6 @@ uvloop==0.16.0
 watchgod==0.7
 wcwidth==0.2.5
 websockets==10.1
+pandas
+dgl
+sklearn
