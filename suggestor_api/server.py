@@ -5,9 +5,10 @@ generate sentence embeddings for a given list of sentences.
 
 import logging
 from typing import List, Optional
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, HTTPException
 
 from sentiment_suggestion import build_sentiment_to_toppings_map, suggest_toppings
+from  predict import predict_toppings, node2id
 
 
 logging.basicConfig(
@@ -43,3 +44,11 @@ async def generate_toppings(feelings: Optional[str] = Query("the the the the")):
     """
     toppings = suggest_toppings(feelings, TOPPING_MAP, 3)
     return {'toppings': toppings}
+
+@api.get('/suggest')
+async def recommend_toppings(topping: List[str] = Query(["mozzarella"])):
+    for top in topping:
+        if top not in node2id:
+            HTTPException(status_code=422, detail="Invalid topping passed")
+    suggested_toppings = predict_toppings(topping)
+    return {'toppings': suggested_toppings}
