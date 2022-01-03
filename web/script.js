@@ -7,7 +7,14 @@ var ERROR_TEXT = 'Ope, sorry! There was an error from server. Does Colin have it
 
 const get_sentiment_toppings = async (user_guess) => {
   console.log('hi')
-  const response = fetch('http://' + SERVER_IP + '/top', {
+  // const uri = encodeURI('http://' + SERVER_IP + '/top?feelings=' + user_guess)
+  const uri = encodeURI(
+    'http://' + SERVER_IP +
+    '/suggest?topping=pepperoni&topping=tomato'
+  )
+  const encoded = encodeURI(uri);
+  console.log(encoded);
+  const response = fetch(uri, {
     method: 'GET',
     // body: JSON.stringify({"list_length": list_length}),
     headers: {
@@ -83,3 +90,18 @@ $(document).ready(function(){
 function setUserInputButtonDisabled(b){
   $('#userGuessButton').prop('disabled', b);
 }
+
+$.getJSON("pizza_ingredients.json", function(json) {
+  var linked_output = []
+  for (const [key, value] of Object.entries(json)) {
+    linked_output = linked_output.concat(value)
+  }
+  data = linked_output
+  availableTags = linked_output
+});
+
+$(document).ready(function(){
+  $( "#userInputField" ).autocomplete({
+    source: data,
+  });
+});
