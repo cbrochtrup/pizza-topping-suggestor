@@ -93,7 +93,6 @@ n_nodes = g.number_of_nodes()
 adj = sp.coo_matrix((np.ones(len(u)), (u.numpy(), v.numpy())), shape=(n_nodes, n_nodes))
 adj_neg = 1 - adj.todense() - np.eye(g.number_of_nodes())
 neg_u, neg_v = np.where(adj_neg != 0)
-print(type(neg_u), neg_u.dtype)
 
 neg_eids = np.random.choice(len(neg_u), g.number_of_edges() // 2)
 test_neg_u, test_neg_v = neg_u[neg_eids[:test_size]], neg_v[neg_eids[:test_size]]
@@ -284,8 +283,8 @@ class MLPPredictor(nn.Module):
 
 model = GraphSAGE(train_g.ndata['feat'].shape[1], 16)
 # You can replace DotPredictor with MLPPredictor.
-#pred = MLPPredictor(16)
-pred = DotPredictor()
+pred = MLPPredictor(16)
+# pred = DotPredictor()
 
 def compute_loss(pos_score, neg_score):
     scores = torch.cat([pos_score, neg_score])
@@ -329,9 +328,6 @@ for e in range(50):
     
     if e % 5 == 0:
         print('In epoch {}, loss: {}'.format(e, loss))
-    
-# torch.save(model, 'dgl-model.pt')
-# torch.save(pred, 'dgl-pred.pt')
 
 # ----------- 5. check results ------------------------ #
 from sklearn.metrics import roc_auc_score
