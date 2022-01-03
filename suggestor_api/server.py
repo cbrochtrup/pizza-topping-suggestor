@@ -4,8 +4,9 @@ generate sentence embeddings for a given list of sentences.
 """
 
 import logging
+from typing import List, Optional
+from fastapi import FastAPI, Query
 
-from fastapi import FastAPI
 from sentiment_suggestion import build_sentiment_to_toppings_map, suggest_toppings
 
 
@@ -27,9 +28,18 @@ async def root():
 
 
 @api.get('/top')
-async def generate_toppings():
-    toppings = suggest_toppings(
-        'My day was kind of rough, I could not find my blanket and my children all tried to kill me',
-        TOPPING_MAP, 3
+async def generate_toppings(feelings: Optional[str] = Query("the the the the")):
+    """
+    Example request from python
+
+    r = requests.get(
+        'http://127.0.0.1:8000/top?' + urllib.parse.quote('I can not believe you would do this to me on the day of my wedding.')
     )
+
+    javascript URI encoding
+        const uri = 'https://mozilla.org/?x=шеллы';
+        const encoded = encodeURI(uri);
+        console.log(encoded);
+    """
+    toppings = suggest_toppings(feelings, TOPPING_MAP, 3)
     return {'toppings': toppings}
