@@ -13,6 +13,7 @@ with open('node2id.json') as f:
 id2node = {id: node for node, id in node2id.items()}
 
 # TODO? Figure out how to save and load dgl models
+# TODO: visualize toppings graph? https://docs.dgl.ai/en/0.6.x/tutorials/basics/1_first.html
 def predict_toppings(toppings_found):
     edges_fw = [
         build_edge(top1, top2, node2id)
