@@ -24,10 +24,14 @@ def get_polarity(score_dict):
         raise Exception(f'We got an unexpcted label {label}')
 
 def generate_scores_json():
-    sentiment_analysis = pipeline("sentiment-analysis", model="siebert/sentiment-roberta-large-english")
+    # sentiment_analysis = pipeline("sentiment-analysis", model="siebert/sentiment-roberta-large-english")
+    sentiment_analysis = pipeline('sentiment-analysis', model='distilbert-base-uncased-finetuned-sst-2-english')
     return_dict = {}
     for category, ing_list in ingredients.items():
-        scores = sentiment_analysis(ing_list)
+        if not ing_list:
+          continue
+        scores = sentiment_analysis(ing_list, padding='longest')
+        print(scores)
         return_dict[category] = {ing: get_polarity(score) for ing, score in zip(ing_list, scores)}
     with open(scores_file, "w") as f:
         json.dump(return_dict, f, indent=2, sort_keys=True)
@@ -70,7 +74,7 @@ def suggest_toppings(query, toppings_map, n_toppings):
     [print(len(_)) for _ in sentence_words]
     print(f'we have {len(sentence_words)} sentecnes with {len(sentence_words[0])} characters')
     # TODO: get faster model
-    sentiment_analysis = pipeline("sentiment-analysis", model="siebert/sentiment-roberta-large-english")
+    sentiment_analysis = pipeline('sentiment-analysis', model='distilbert-base-uncased-finetuned-sst-2-english')
     scores = sentiment_analysis(sentence_words, padding='longest')
     # TODO: Prevent duplicate toppings
     toppings = [choose_toppings(get_polarity(score), toppings_map) for score in scores]
@@ -78,10 +82,10 @@ def suggest_toppings(query, toppings_map, n_toppings):
 
 
 if __name__ == "__main__":
+    # generate_scores_json()
     m = build_sentiment_to_toppings_map()
     toppings = suggest_toppings(
         'My day was kind of rough, I could not find my blanket and my children all tried to kill me',
         m, 3
     )
     print(toppings)
-    print('hi')
