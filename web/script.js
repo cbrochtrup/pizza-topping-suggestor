@@ -6,29 +6,35 @@ var ERROR_TEXT = 'Ope, sorry! There was an error from server. Does Colin have it
 
 
 const get_sentiment_toppings = async (user_guess) => {
-  console.log('hi')
-  // const uri = encodeURI('http://' + SERVER_IP + '/top?feelings=' + user_guess)
-  const uri = encodeURI(
-    'http://' + SERVER_IP +
-    '/suggest?topping=pepperoni&topping=tomato'
-  )
+  console.log(mode)
+  var mode = $( "#modeSelecter" ).val()
+  var uri;
+  if (mode == "feelings") {
+    uri = 'http://' + SERVER_IP + '/top?feelings=' + user_guess
+  } else {
+    var arr = user_guess.split(",").map(function(item) {
+        return item.trim();
+    });
+    const query_params = arr.join('&topping=')
+    console.log(arr)
+    uri = 'http://' + SERVER_IP + '/suggest?topping=' + query_params 
+  }
   const encoded = encodeURI(uri);
   console.log(encoded);
-  const response = fetch(uri, {
+  const response = fetch(encoded, {
     method: 'GET',
-    // body: JSON.stringify({"list_length": list_length}),
     headers: {
-      // 'Content-Type': 'application/json',
       'Accept': 'application/json',
     }
   })
   .then((response) => response.json())
   .then(responseData => {
     console.log(responseData)
+    $('#feedback').html(
+        'PLACEHOLDER<br/>' + responseData['toppings'].slice(0, 3).join(', '))
   })
   .catch(error => {
     console.warn(error);
-    // On error, move to the next word
     $('#feedback').text(ERROR_TEXT);
   });
 }
@@ -41,9 +47,10 @@ $(document).ready(function(){
   $('#userInputField').val('');
 });
 
-var userGuess;
 function sendUserInput(){
-  userGuess = $('#userInputField').val();
+  userGuess = $('#userInputField').val().toLowerCase();
+  // $("#user").toggleClass('is-hidden');
+  get_sentiment_toppings(userGuess);
   console.log(userGuess);
   if (userGuess.length > 2 && ! $('#userGuessButton').prop('disabled')) {
     console.log('sending!');
@@ -62,7 +69,7 @@ $(document).ready(function(){
 $(document).ready(function(){
   $("#newGame").click(function(){
     $('#newGame').prop('disabled', true);
-    get_sentiment_toppings("TODO: pass me in");
+    sendUserInput();
     setInterval(function(){
       $('#newGame').prop('disabled', false);
     }, 3000)
