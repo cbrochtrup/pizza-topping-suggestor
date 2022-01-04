@@ -314,7 +314,7 @@ optimizer = torch.optim.Adam(itertools.chain(model.parameters(), pred.parameters
 
 # ----------- 4. training -------------------------------- #
 all_logits = []
-for e in range(50):
+for e in range(100):
     # forward
     h = model(train_g, train_g.ndata['feat'])
     pos_score = pred(train_pos_g, h)

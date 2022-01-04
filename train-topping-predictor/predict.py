@@ -14,7 +14,7 @@ id2node = {id: node for node, id in node2id.items()}
 
 # TODO? Figure out how to save and load dgl models
 # TODO: visualize toppings graph? https://docs.dgl.ai/en/0.6.x/tutorials/basics/1_first.html
-def predict_toppings(toppings_found):
+def predict_toppings(toppings_found, n=10):
     edges_fw = [
         build_edge(top1, top2, node2id)
         for top1, top2 in itertools.combinations(toppings_found, 2)
@@ -28,8 +28,8 @@ def predict_toppings(toppings_found):
         dict(
             Src=node2id[top],
             Dst=i,
-            Weight1=0,
-            Weight2=0
+            Weight1=10,
+            Weight2=10
         )
         for top in toppings_found
         for i in range(len(node2id))
@@ -47,7 +47,7 @@ def predict_toppings(toppings_found):
     with torch.no_grad():
         h = model(g_orig, g_orig.ndata['feat'])
         score = pred(g, h)
-        vals, indices = torch.topk(score, min(30, score.numel()))
+        vals, indices = torch.topk(score, min(n, score.numel()))
         valid_inds = [
             g.edges()[1][ind.item()].item()
             for ind in indices if ind not in node_ids
