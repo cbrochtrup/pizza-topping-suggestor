@@ -2,6 +2,7 @@ import dgl
 from dgl.data import DGLDataset
 import pandas as pd
 import torch
+import networkx as nx
 import numpy as np
 
 class PizzaToppingDataset(DGLDataset):
@@ -44,5 +45,41 @@ class PizzaToppingDataset(DGLDataset):
     def __len__(self):
         return 1
 
-dataset = PizzaToppingDataset()
-graph = dataset[0]
+
+def get_connected_toppings(to_start):
+    nx_G = graph.to_networkx().to_undirected()
+    nx_G = nx.relabel_nodes(nx_G, id2node)
+    return list(nx_G.neighbors(start_node))
+
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    import json
+    import sys
+
+    dataset = PizzaToppingDataset()
+    graph = dataset[0]
+
+    start_node = sys.argv[1]
+    with open('node2id.json') as f:
+        node2id = json.load(f)
+    id2node = {id: node for node, id in node2id.items()}
+    
+    # Since the actual graph is undirected, we convert it for visualization
+    # purpose.
+    nx_G = graph.to_networkx().to_undirected()
+    nx_G = nx.relabel_nodes(nx_G, id2node)
+    to_plot = list(nx_G.neighbors(start_node))
+    to_plot += [start_node]
+    nx_G = nx_G.subgraph(to_plot)
+    # to_plot = list(nx_G.neighbors(0))
+    # Kamada-Kawaii layout usually looks pretty for arbitrary graphs
+    pos = nx.kamada_kawai_layout(nx_G)
+    nx.draw(
+        nx_G, pos,
+        with_labels=True,
+        node_color=[[.7, .7, .7]],
+        nodelist=to_plot,
+        font_color='blue'
+    )
+    plt.savefig('graph.png')
