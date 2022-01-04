@@ -1,26 +1,27 @@
 //////// Data Processing Code //////////
+//////////////////////////////////////////////
 
 var SERVER_IP = 'jellyfishjunction.zapto.org'
 
-var ERROR_TEXT = 'Ope, sorry! There was an error from server. Does Colin have it on?'
+var ERROR_TEXT = 'Something went wrong... I will get a better error messages eventually'
 
 
 const get_sentiment_toppings = async (user_guess) => {
-  console.log(mode)
   var mode = $( "#modeSelecter" ).val()
   var uri;
+  var display_prefix;
   if (mode == "feelings") {
     uri = 'http://' + SERVER_IP + '/top?feelings=' + user_guess
+    display_prefix = 'These toppings match your mood:'
   } else {
     var arr = user_guess.split(",").map(function(item) {
         return item.trim();
     });
     const query_params = arr.join('&topping=')
-    console.log(arr)
     uri = 'http://' + SERVER_IP + '/suggest?topping=' + query_params 
+    display_prefix = 'These toppings are great with ' + user_guess + ':'
   }
   const encoded = encodeURI(uri);
-  console.log(encoded);
   const response = fetch(encoded, {
     method: 'GET',
     headers: {
@@ -31,7 +32,7 @@ const get_sentiment_toppings = async (user_guess) => {
   .then(responseData => {
     console.log(responseData)
     $('#feedback').html(
-        'PLACEHOLDER<br/>' + responseData['toppings'].slice(0, 3).join(', '))
+        display_prefix + '<br/><b>' + responseData['toppings'].slice(0, 3).join(', ') + '</b>')
   })
   .catch(error => {
     console.warn(error);
@@ -49,10 +50,10 @@ $(document).ready(function(){
 
 function sendUserInput(){
   userGuess = $('#userInputField').val().toLowerCase();
-  // $("#user").toggleClass('is-hidden');
-  get_sentiment_toppings(userGuess);
   console.log(userGuess);
   if (userGuess.length > 2 && ! $('#userGuessButton').prop('disabled')) {
+    $('#feedback').html('Designing toppings!')
+    get_sentiment_toppings(userGuess);
     console.log('sending!');
     $('#userInputField').val('');
   }
