@@ -50,7 +50,7 @@ async def generate_toppings(feelings: Optional[str] = Query("the the the the")):
 async def recommend_toppings(topping: List[str] = Query(["mozzarella"])):
     for top in topping:
         if top not in node2id:
-            HTTPException(status_code=422, detail="Invalid topping passed")
+            raise HTTPException(status_code=422, detail="Invalid topping passed")
     suggested_toppings = predict_toppings(topping, 10)
     LOGGER.info(suggested_toppings)
     suggested_toppings = random.sample(suggested_toppings, 3)
